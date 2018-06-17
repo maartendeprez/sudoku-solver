@@ -31,7 +31,8 @@ process (i,p) = do
 
 -- | 81 integer bitfields of possible values
 --   in left-to-right, top-top bottom order
-newtype Sudoku = Sudoku [Integer]
+type Field = Int
+newtype Sudoku = Sudoku [Field]
 
 
 instance Eq Sudoku where
@@ -53,7 +54,7 @@ instance Show Sudoku where
     map (intersperse ' ') $ chunksOf dimension $
     map showBox s
 
-readBox :: ReadP Integer
+readBox :: ReadP Field
 readBox = munch1 (`elem` ('_':symbols)) <* skipSpaces
   >>= return . possible . map val
   where val '_' = allbits
@@ -61,7 +62,7 @@ readBox = munch1 (`elem` ('_':symbols)) <* skipSpaces
           Just n -> nbit n
           Nothing -> error "should not happen"
 
-showBox :: Integer -> Char
+showBox :: Field -> Char
 showBox b
   | n == 1 = symbols !! head (vals b)
   | n == groupsize = '_'
@@ -72,25 +73,25 @@ showBox b
 
 -- Row, column, block extraction
 
-rows :: Sudoku -> [[Integer]]
+rows :: Sudoku -> [[Field]]
 rows (Sudoku s) = chunksOf groupsize s
 
-fromRows :: [[Integer]] -> Sudoku
+fromRows :: [[Field]] -> Sudoku
 fromRows = Sudoku. foldr1 (++)
 
-cols :: Sudoku -> [[Integer]]
+cols :: Sudoku -> [[Field]]
 cols = transpose . rows
 
-fromCols :: [[Integer]] -> Sudoku
+fromCols :: [[Field]] -> Sudoku
 fromCols = fromRows . transpose
 
-blocks :: Sudoku -> [[Integer]]
+blocks :: Sudoku -> [[Field]]
 blocks = blockDance . rows
 
-fromBlocks :: [[Integer]] -> Sudoku
+fromBlocks :: [[Field]] -> Sudoku
 fromBlocks = fromRows . blockDance
 
-blockDance :: [[Integer]] -> [[Integer]]
+blockDance :: [[Field]] -> [[Field]]
 blockDance = map (foldr1 (++)) . foldr1 (++)
   . transpose . map (chunksOf dimension)
   . transpose . map (chunksOf dimension)
@@ -112,11 +113,11 @@ solve1 = fromBlocks . map solveGroup . blocks
   . fromCols . map solveGroup . cols
   . fromRows . map solveGroup . rows
 
-solveGroup :: [Integer] -> [Integer]
+solveGroup :: [Field] -> [Field]
 solveGroup = (`using` parList rseq) . map solveField . fields
 
 
-solveField :: (Integer, [Integer]) -> Integer
+solveField :: (Field, [Field]) -> Field
 solveField (f,c) = f .&. (allbits `xor` p)
   where l = map defined (combinations c)
         p = possible $ (allbits `xor` f) : l
@@ -128,26 +129,26 @@ check (Sudoku s)
   | otherwise = "undecided"
   where b = map nbits s
 
-fields :: [Integer] -> [(Integer, [Integer])]
+fields :: [Field] -> [(Field, [Field])]
 fields r = map (field r) [0 .. length r - 1]
 
-field :: [Integer] -> Int -> (Integer, [Integer])
+field :: [Field] -> Int -> (Field, [Field])
 field r i = (r !! i, take i r ++ drop (i+1) r)
 
-combinations :: [Integer] -> [[Integer]]
+combinations :: [Field] -> [[Field]]
 combinations [] = []
 combinations (x:[]) = [[x]]
 combinations (x:xs) = ([x] : combinations xs)
   ++ map (x:) (combinations xs)
 
 
-possible :: [Integer] -> Integer
+possible :: [Field] -> Field
 --possible = foldr1 (.|.)
 possible (b:bs)
   | bs == [] || b == allbits = b
   | otherwise = b .|. possible bs
 
-defined :: [Integer] -> Integer
+defined :: [Field] -> Field
 defined r
   | nbits p > length r = 0
   | otherwise = p
@@ -176,17 +177,17 @@ boardsize = groupsize * groupsize
 maxbit :: Int
 maxbit = groupsize - 1
 
-allbits :: Integer
+allbits :: Field
 allbits = (1 `shiftL` groupsize) - 1
 
-bitn :: Integer -> Int -> Int
+bitn :: Field -> Int -> Int
 bitn b i = fromIntegral $ 1 .&. (b `shiftR` i)
 
-nbit :: Int -> Integer
+nbit :: Int -> Field
 nbit i = 1 `shiftL` i
 
-nbits :: Integer -> Int
+nbits :: Field -> Int
 nbits b = sum $ map (bitn b) [0..maxbit]
 
-vals :: Integer -> [Int]
+vals :: Field -> [Int]
 vals b = filter ((>0) . (bitn b)) [0..maxbit]
