@@ -1,3 +1,8 @@
+-- Sudoku solver
+--
+-- Configure dimension, symbols and searchdepth
+-- further down.
+
 import Data.Char
 import Data.Bits
 import Data.List
@@ -119,7 +124,7 @@ solveGroup = (`using` parList rseq) . map solveField . fields
 
 solveField :: (Field, [Field]) -> Field
 solveField (f,c) = f .&. (allbits `xor` p)
-  where l = map defined (combinations c)
+  where l = map defined (concatMap (combinations c) [1..searchdepth])
         p = possible $ (allbits `xor` f) : l
 
 check :: Sudoku -> String
@@ -135,11 +140,10 @@ fields r = map (field r) [0 .. length r - 1]
 field :: [Field] -> Int -> (Field, [Field])
 field r i = (r !! i, take i r ++ drop (i+1) r)
 
-combinations :: [Field] -> [[Field]]
-combinations [] = []
-combinations (x:[]) = [[x]]
-combinations (x:xs) = ([x] : combinations xs)
-  ++ map (x:) (combinations xs)
+combinations :: [Int] -> Int -> [[Int]]
+combinations x 1 = map (:[]) x
+combinations x n = concatMap (s . flip drop x) [0..length x - n]
+  where s (x:xs) = map (x:) $ combinations xs (n-1)
 
 
 possible :: [Field] -> Field
@@ -173,6 +177,9 @@ groupsize = dimension * dimension
 
 boardsize :: Int
 boardsize = groupsize * groupsize
+
+searchdepth :: Int
+searchdepth = groupsize
 
 maxbit :: Int
 maxbit = groupsize - 1
