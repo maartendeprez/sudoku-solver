@@ -1,5 +1,8 @@
 *~
 *.o
 *.hi
+
+gmon.out
+
 sudoku
 solve

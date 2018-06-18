@@ -1,3 +1,13 @@
+/*
+ * Sudoku solver
+ *
+ * Author: Maarten Deprez <deprez.maarten@gmail.com>
+ */
+
+#define BRUTEFORCE 1 /* go on guessing if deterministic algorithm
+			yields an incompletely defined solution */
+
+
 #include <sys/types.h>
 #include <sys/stat.h>
 #include <fcntl.h>
@@ -5,16 +15,7 @@
 #include <string.h>
 #include <stdio.h>
 #include <stdlib.h>
-
-
-/* Dimensionality 
- *
- * 3 -> 3x3x3 (or 9x9)
- * 4 -> 4x4x4 (or 16x16)
- *
- * See the 'sym' functions below for the related
- * symbol parsing.
- */
+#include <x86intrin.h>
 
 
 /* Field type and predefined values
@@ -67,7 +68,11 @@ static int status(params_t *p, field *board);
 static int verify(params_t *p, field *board);
 
 static field combination(struct params *p, field *group, field c);
-static int nbits(struct params *p, field b);
+
+#define nbits _mm_popcnt_u32
+#define fstbit __bsfd
+//#define clrbit(b) (c = __blsr_u32(b))
+#define clrbit(b) (b &= b - 1)
 
 
 /* Main functon
@@ -101,7 +106,7 @@ int main(int argc, char *argv[]) {
       return 1;
     }
 
-#if 0 /* Deterministic solution */
+#if !BRUTEFORCE /* Deterministic solution */
 
     s = solve(&game);
     showmeta(&game, s);
@@ -184,8 +189,8 @@ int load(sudoku_t *game, params_t *pars, int pn, char *path) {
     
     /* Init parser */
   
-    buf[len] = 0; // null is not space and not a symbol,
-    s = buf;      // so passing over it will always fail
+    buf[len] = 0; /* null is not space and not a symbol, */
+    s = buf;      /* so passing over it will always fail */
 
     /* Allocate board */
     
@@ -363,31 +368,10 @@ static char field_to_sym(params_t *p, field b) {
     return '*';
   if (b == p->allbits)
     return '_';
-  if (nbits(p, b) > 1)
+  if (nbits(b) > 1)
     return '.';
-  
-  i = 0;
-  while ((b & 1) == 0) {
-    i++; b >>= 1;
-  }
 
-  return p->symbols[i];
-
-}
-
-
-/* Bitfield handling */
-
-static int nbits(params_t *p, field b) {
-
-  int i, n = 0;
-
-  for (i = 0; i < p->groupsize; i++) {
-    n += b & 1;
-    b >>= 1;
-  }
-  
-  return n;
+  return p->symbols[fstbit(b)];
 
 }
 
@@ -462,20 +446,18 @@ int solve2(sudoku_t *game, int ms) {
   /* Select first undetermined field */
   
   for (i = 0; i < p->boardsize; i++)
-    if (nbits(p, board[i]) > 1)
+    if (nbits(board[i]) > 1)
       break;
 
   
   /* Try every possibility */
 
-  for (n = 0, b = board[i]; n < p->groupsize; n++, b >>= 1) {
+  b = board[i];
+  while (b) {
 
-    if ((b & 1) == 0)
-      continue;
-
-    board[i] = 1 << n;
+    board[i] = 1 << fstbit(b);
     game->tries++;
-
+    clrbit(b);
     
     /* Recurse */
 
@@ -585,7 +567,7 @@ static int solve1(params_t *p, field *board) {
 static int solvegroup(params_t *p, field *group) {
 
   int i, m = 0;
-  field b, c;
+  field b, c, d;
   field def[p->groupsize];
 
 
@@ -597,12 +579,14 @@ static int solvegroup(params_t *p, field *group) {
 
     b = combination(p, group, c);
 
-    if (nbits(p, c) < nbits(p, b))
+    if (nbits(c) < nbits(b))
       continue;
 
-    for (i = 0; i < p->groupsize; i++)
-      if ((c & (1 << i)) == 0)
-	def[i] |= b;
+    d = c ^ p->allbits;
+    while (d) {
+      def[fstbit(d)] |= b;
+      clrbit(d);
+    }
 
   }
 
@@ -628,9 +612,11 @@ static field combination(params_t *p, field *group, field c) {
   int j;
   field a = 0;
 
-  for (j = 0; j < p->groupsize; c >>= 1, j++)
-    if (c&1) a |= group[j];
-
+  while (c) {
+    a |= group[fstbit(c)];
+    clrbit(c);
+  }
+  
   return a;
 
 }
@@ -653,7 +639,7 @@ static int status(params_t *p, field *board) {
 
   /* Check for undef */
   for (i = 0; i < p->boardsize; i++)
-    if (nbits(p, board[i]) > 1)
+    if (nbits(board[i]) > 1)
       return 0;
 
   return 1;
