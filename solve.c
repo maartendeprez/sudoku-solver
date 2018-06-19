@@ -6,6 +6,11 @@
 
 #define BRUTEFORCE 1 /* go on guessing if deterministic algorithm
 			yields an incompletely defined solution */
+#define COMB_BUF 1   /* use combination buffer; faster, but uses
+		      * a block of memory (128MB for 5x5) per
+		      * group resolver; not possible yet with
+		      * parallelization */
+#define DEBUG_STEP 1
 
 
 #include <sys/types.h>
@@ -19,20 +24,25 @@
 
 
 /* Field type and predefined values
- * unsigned short is enough for 4x4x4
+ * unsigned int is enough for 5x5x5
  */
 
 typedef unsigned int field;
 
 typedef struct params {
+
   int dimension;
   int groupsize;
   int boardsize;
   int allbits;
   char *symbols;
+#if COMB_BUF
+  field *buf;
+#endif
 } params_t;
 
 typedef struct sudoku {
+
   struct params *pars;
   field *board;
   char *path;
@@ -61,6 +71,7 @@ char *statusmsg(int s);
 static int solve1(params_t *p, field *board);
 static int solvegroup(params_t *p, field *group);
 
+static void showboard(params_t *p, field *board);
 static int sym_to_field(params_t *p, char c, field *b);
 static char field_to_sym(params_t *p, field b);
 
@@ -138,11 +149,12 @@ int main(int argc, char *argv[]) {
 
 
 void setparams(params_t *p, int dimension, char *syms) {
+
   p->dimension = dimension;
   p->groupsize = p->dimension * p->dimension;
   p->boardsize = p->groupsize * p->groupsize;
   p->allbits = (1 << p->groupsize) - 1;
-  p->symbols = syms;
+  p->symbols = syms;  
 }
 
 
@@ -238,12 +250,24 @@ int load(sudoku_t *game, params_t *pars, int pn, char *path) {
   game->solutions = 0;
   game->path = path;
 
+#if COMB_BUF
+  game->pars->buf = malloc((p->allbits + 1) * sizeof(field));
+
+  if (p->buf == NULL) {
+    fprintf(stderr, "Failed to allocate buffer: %m\n");
+    exit(1);
+  }
+#endif
+
   return 1;
 
 }
 
 void unload(sudoku_t *game) {
   free(game->board);
+#if COMB_BUF
+  free(game->params->buf)
+#endif
 }
 
 
@@ -284,11 +308,12 @@ void showmeta(sudoku_t *game, int s) {
  * This prints the fields as symbols, interspersed with
  * whitespace for formatting.
  */
-
 void show(sudoku_t *game) {
+  showboard(game->pars, game->board);
+}
 
-  params_t *p = game->pars;
-  field *board = game->board;
+static void showboard(params_t *p, field *board) {
+
   int i, s;
   
   for (i = 0; i < p->boardsize; i++) {
@@ -539,6 +564,11 @@ static int solve1(params_t *p, field *board) {
 	    + (j % p->dimension)] = group[j];
 
   }
+
+#if DEBUG_STEP
+  fprintf(stderr, "\nStep (%d changes)\n\n", m);
+  showboard(p, board);
+#endif
   
   return m;
 
@@ -569,15 +599,34 @@ static int solvegroup(params_t *p, field *group) {
   int i, m = 0;
   field b, c, d;
   field def[p->groupsize];
+  
+#if COMB_BUF
 
+  /* Populate combination buffer */
+  
+  for (p->buf[0] = i = 0; i < p->groupsize; i++) {
 
-  /* Populate buffer */
+    memcpy(&p->buf[1 << i], p->buf, (1 << i) * sizeof(field));
+
+    for (c = (1 << i); c < (1 << (i+1)); c++)
+      p->buf[c] |= group[i];
+
+  }
+
+#endif
+  
+
+  /* Calculate defined combinations */
   
   memset(def, 0, sizeof(def));
   
   for (c = 1; c < p->allbits; c++) {
 
+#if COMB_BUF
+    b = p->buf[c];
+#else
     b = combination(p, group, c);
+#endif
 
     if (nbits(c) < nbits(b))
       continue;
