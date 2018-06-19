@@ -1,0 +1,334 @@
+Sudoku test25a.txt, solution 1: solved in 342 steps, 311 tries:
+
+a b c f d  e g i j m  h k l n v  q r y p s  o t u w x
+g i j k l  h a b c d  e f o s t  n u v w x  q r y p m
+h e m n p  f k l q r  a u w x y  o b c g t  d i j s v
+o r s t u  p w v x y  b c d q g  a e i m j  f h k l n
+q v w x y  o n s t u  i j m p r  d f h k l  b c a e g
+
+d h a b i  n e c f j  l m k g x  p o q t r  s u v y w
+f c g j k  d b a h i  n e p t o  s v w u y  l m q x r
+m n e o q  r l t u w  v y b a s  c d f x g  h j i k p
+l p t s v  g m k y x  c q r u w  b a j h i  e d f n o
+u w r y x  q v o s p  d h f i j  e k l n m  a b c g t
+
+b d f a c  l h e g n  m o j k p  r q s i u  v w x t y
+e g h i j  a c f b o  q d n l u  v x t y w  k p m r s
+n l o m r  i d w v k  s t x y a  f c b e p  j g h q u
+k x q u s  j y m p t  w b v r c  g h d a n  i e o f l
+p t y v w  s u x r q  f g e h i  j l m o k  c a n b d
+
+c f b d a  k i h e s  g n q o m  y t p r v  w x l u j
+i k l e g  t f d a b  p r u c h  x w n j o  y v s m q
+r j n h m  u o p l c  x v y w b  i s e q d  g f t a k
+s q x p o  w j y m v  k i t d l  u g a b f  r n e c h
+v y u w t  x q r n g  j a s e f  h m k l c  p o d i b
+
+t a d g b  c p j i e  u l h m n  k y r v q  x s w o f
+w m i c e  b t q d f  o p g v k  l n x s h  u y r j a
+x o p q h  m r g w l  y s i f d  t j u c a  n k b v e
+j u v r f  y s n k a  t x c b q  w p o d e  m l g h i
+y s k l n  v x u o h  r w a j e  m i g f b  t q p d c
+
+
+Sudoku test25a.txt, solution 2: solved in 342 steps, 312 tries:
+
+a b c f d  e g i j m  h k l n v  q r y p s  o t u w x
+g i j k l  h a b c d  e f o s t  n u v w x  q r y p m
+h e m n p  f k l q r  a u w x y  o b c g t  d i j s v
+o r s t u  p w v x y  b c d q g  a e i m j  f h k l n
+q v w x y  o n s t u  i j m p r  d f h k l  b c a e g
+
+d h a b i  n e c f j  l m k g x  p o q t r  s u v y w
+f c g j k  d b a h i  n e p t o  s v w u y  l m q x r
+m n e o q  r l t u w  v y b a s  c d f x g  h j i k p
+l p t s v  g m k y x  c q r u w  b a j h i  e d f n o
+u w r y x  q v o s p  d h f i j  e k l n m  a b c g t
+
+b d f a c  l h e g n  m o j k p  r q s i u  v w x t y
+e g h i j  a c f b o  q d n l u  v x t y w  k p m r s
+n l o m r  i d w v k  s t x y a  f c b e p  j g h q u
+k x q u s  j y m p t  w b v r c  g h d a n  i e o f l
+p t y v w  s u x r q  f g e h i  j l m o k  c a n b d
+
+c f b d a  k i h e s  g n q o m  y t p r v  w x l u j
+i k l e g  t f d a b  p r u c h  x w n j o  y v s m q
+r j n h m  u o p l c  x v y w b  i s e q d  g f t a k
+s q x p o  w j y m v  k i t d l  u g a b f  r n e c h
+v y u w t  x q r n g  j a s e f  h m k l c  p o d i b
+
+t a d g b  c p j i e  u l h m n  k y r v q  x s w o f
+w m i c e  b t q d f  o p g v k  l n x s h  u y r j a
+x o p q h  y r g w l  t s i f d  m j u c a  n k b v e
+j u v r f  m s n k a  y x c b q  w p o d e  t l g h i
+y s k l n  v x u o h  r w a j e  t i g f b  m q p d c
+
+
+Sudoku test25a.txt, solution 3: solved in 341 steps, 313 tries:
+
+a b c f d  e g i j m  h k l n v  q r y p s  o t u w x
+g i j k l  h a b c d  e f o s t  n u v w x  q r y p m
+h e m n p  f k l q r  a u w x y  o b c g t  d i j s v
+o r s t u  p w v x y  b c d q g  a e i m j  f h k l n
+q v w x y  o n s t u  i j m p r  d f h k l  b c a e g
+
+d h a b i  n e c f j  l m k g x  p o q t r  s u v y w
+f c g j k  d b a h i  n e p t o  s v w u y  l m q x r
+m n e o q  r l t u w  v y b a s  c d f x g  h j i k p
+l p t s v  g m k y x  c q r u w  b a j h i  e d f n o
+u w r y x  q v o s p  d h f i j  e k l n m  a b c g t
+
+b d f a c  l h e g n  m o j k p  r q s i u  v w x t y
+e g h i j  a c f b o  q d n l u  v x t y w  k p m r s
+n l o m r  i d w v k  s t x y a  f c b e p  j g h q u
+k x q u s  j y m p t  w b v r c  g h d a n  i e o f l
+p t y v w  s u x r q  f g e h i  j l m o k  c a n b d
+
+c f b d a  k i h e s  g n q o m  y t p r v  w x l u j
+i k l e g  t f d a b  p r u c h  x w n j o  y v s m q
+r j n h m  u o p l c  x v y w b  i s e q d  g f t a k
+s q x p o  w j y m v  k i t d l  u g a b f  r n e c h
+v y u w t  x q r n g  j a s e f  h m k l c  p o d i b
+
+t a d g b  c p j i e  u l h m n  k y r v q  x s w o f
+w m i c e  b t q d f  o p g v k  l n x s h  u y r j a
+x o p r h  m s g k l  y w i f d  t j u c a  n q b v e
+j u v l f  y x n w a  r s c b q  m p o d e  t k g h i
+y s k q n  v r u o h  t x a j e  w i g f b  m l p d c
+
+
+Sudoku test25a.txt, solution 4: solved in 341 steps, 316 tries:
+
+a b c f d  e g i j m  h k l n v  q r y p s  o t u w x
+g i j k l  h a b c d  e f o s t  n u v w x  q r y p m
+h e m n p  f k l q r  a u w x y  o b c g t  d i j s v
+o r s t u  p w v x y  b c d q g  a e i m j  f h k l n
+q v w x y  o n s t u  i j m p r  d f h k l  b c a e g
+
+d h a b i  n e c f j  l m k g x  p o q t r  s u v y w
+f c g j k  d b a h i  n e p t o  s v w u y  l m q x r
+m n e o q  r l t u w  v y b a s  c d f x g  h j i k p
+l p t s v  g m k y x  c q r u w  b a j h i  e d f n o
+u w r y x  q v o s p  d h f i j  e k l n m  a b c g t
+
+b d f a c  l h e g n  m o j k p  r q s i u  v w x t y
+e g h i j  a c f b o  q d n l u  v x t y w  k p m r s
+n l o m r  i d w v k  s t x y a  f c b e p  j g h q u
+k x q u s  j y m p t  w b v r c  g h d a n  i e o f l
+p t y v w  s u x r q  f g e h i  j l m o k  c a n b d
+
+c f b d a  k i h e s  g n q o m  y t p r v  w x l u j
+i k l e g  t f d a b  p r u c h  x w n j o  y v s m q
+r j n h m  u o p l c  x v y w b  i s e q d  g f t a k
+s q x p o  w j y m v  k i t d l  u g a b f  r n e c h
+v y u w t  x q r n g  j a s e f  h m k l c  p o d i b
+
+t a d g b  c p j i e  u l h m n  k y r v q  x s w o f
+w m i c e  b t q d f  o p g v k  l n x s h  u y r j a
+x s p q h  m r g o l  y w i f d  t j u c a  n k b v e
+j u v r f  y s n k a  t x c b q  w p o d e  m l g h i
+y o k l n  v x u w h  r s a j e  m i g f b  t q p d c
+
+
+Sudoku test25a.txt, solution 5: solved in 341 steps, 317 tries:
+
+a b c f d  e g i j m  h k l n v  q r y p s  o t u w x
+g i j k l  h a b c d  e f o s t  n u v w x  q r y p m
+h e m n p  f k l q r  a u w x y  o b c g t  d i j s v
+o r s t u  p w v x y  b c d q g  a e i m j  f h k l n
+q v w x y  o n s t u  i j m p r  d f h k l  b c a e g
+
+d h a b i  n e c f j  l m k g x  p o q t r  s u v y w
+f c g j k  d b a h i  n e p t o  s v w u y  l m q x r
+m n e o q  r l t u w  v y b a s  c d f x g  h j i k p
+l p t s v  g m k y x  c q r u w  b a j h i  e d f n o
+u w r y x  q v o s p  d h f i j  e k l n m  a b c g t
+
+b d f a c  l h e g n  m o j k p  r q s i u  v w x t y
+e g h i j  a c f b o  q d n l u  v x t y w  k p m r s
+n l o m r  i d w v k  s t x y a  f c b e p  j g h q u
+k x q u s  j y m p t  w b v r c  g h d a n  i e o f l
+p t y v w  s u x r q  f g e h i  j l m o k  c a n b d
+
+c f b d a  k i h e s  g n q o m  y t p r v  w x l u j
+i k l e g  t f d a b  p r u c h  x w n j o  y v s m q
+r j n h m  u o p l c  x v y w b  i s e q d  g f t a k
+s q x p o  w j y m v  k i t d l  u g a b f  r n e c h
+v y u w t  x q r n g  j a s e f  h m k l c  p o d i b
+
+t a d g b  c p j i e  u l h m n  k y r v q  x s w o f
+w m i c e  b t q d f  o p g v k  l n x s h  u y r j a
+x s p q h  m r g o l  y w i f d  t j u c a  n k b v e
+j u v r f  y x n k a  t s c b q  w p o d e  m l g h i
+y o k l n  v s u w h  r x a j e  m i g f b  t q p d c
+
+
+Sudoku test25a.txt, solution 6: solved in 341 steps, 320 tries:
+
+a b c f d  e g i j m  h k l n v  q r y p s  o t u w x
+g i j k l  h a b c d  e f o s t  n u v w x  q r y p m
+h e m n p  f k l q r  a u w x y  o b c g t  d i j s v
+o r s t u  p w v x y  b c d q g  a e i m j  f h k l n
+q v w x y  o n s t u  i j m p r  d f h k l  b c a e g
+
+d h a b i  n e c f j  l m k g x  p o q t r  s u v y w
+f c g j k  d b a h i  n e p t o  s v w u y  l m q x r
+m n e o q  r l t u w  v y b a s  c d f x g  h j i k p
+l p t s v  g m k y x  c q r u w  b a j h i  e d f n o
+u w r y x  q v o s p  d h f i j  e k l n m  a b c g t
+
+b d f a c  l h e g n  m o j k p  r q s i u  v w x t y
+e g h i j  a c f b o  q d n l u  v x t y w  k p m r s
+n l o m r  i d w v k  s t x y a  f c b e p  j g h q u
+k x q u s  j y m p t  w b v r c  g h d a n  i e o f l
+p t y v w  s u x r q  f g e h i  j l m o k  c a n b d
+
+c f b d a  k i h e s  g n q o m  y t p r v  w x l u j
+i k l e g  t f d a b  p r u c h  x w n j o  y v s m q
+r j n h m  u o p l c  x v y w b  i s e q d  g f t a k
+s q x p o  w j y m v  k i t d l  u g a b f  r n e c h
+v y u w t  x q r n g  j a s e f  h m k l c  p o d i b
+
+t a d g b  c p j i e  u l h m n  k y r v q  x s w o f
+w m i c e  b t q d f  o p g v k  l n x s h  u y r j a
+x s p q h  y r g o l  t w i f d  m j u c a  n k b v e
+j u k r f  v s n w a  y x c b q  t p o d e  m l g h i
+y o v l n  m x u k h  r s a j e  w i g f b  t q p d c
+
+
+Sudoku test25a.txt, solution 7: solved in 341 steps, 321 tries:
+
+a b c f d  e g i j m  h k l n v  q r y p s  o t u w x
+g i j k l  h a b c d  e f o s t  n u v w x  q r y p m
+h e m n p  f k l q r  a u w x y  o b c g t  d i j s v
+o r s t u  p w v x y  b c d q g  a e i m j  f h k l n
+q v w x y  o n s t u  i j m p r  d f h k l  b c a e g
+
+d h a b i  n e c f j  l m k g x  p o q t r  s u v y w
+f c g j k  d b a h i  n e p t o  s v w u y  l m q x r
+m n e o q  r l t u w  v y b a s  c d f x g  h j i k p
+l p t s v  g m k y x  c q r u w  b a j h i  e d f n o
+u w r y x  q v o s p  d h f i j  e k l n m  a b c g t
+
+b d f a c  l h e g n  m o j k p  r q s i u  v w x t y
+e g h i j  a c f b o  q d n l u  v x t y w  k p m r s
+n l o m r  i d w v k  s t x y a  f c b e p  j g h q u
+k x q u s  j y m p t  w b v r c  g h d a n  i e o f l
+p t y v w  s u x r q  f g e h i  j l m o k  c a n b d
+
+c f b d a  k i h e s  g n q o m  y t p r v  w x l u j
+i k l e g  t f d a b  p r u c h  x w n j o  y v s m q
+r j n h m  u o p l c  x v y w b  i s e q d  g f t a k
+s q x p o  w j y m v  k i t d l  u g a b f  r n e c h
+v y u w t  x q r n g  j a s e f  h m k l c  p o d i b
+
+t a d g b  c p j i e  u l h m n  k y r v q  x s w o f
+w m i c e  b t q d f  o p g v k  l n x s h  u y r j a
+x s p q h  y r g o l  t w i f d  m j u c a  n k b v e
+j u k r f  v x n w a  y s c b q  t p o d e  m l g h i
+y o v l n  m s u k h  r x a j e  w i g f b  t q p d c
+
+
+Sudoku test25a.txt, solution 8: solved in 341 steps, 323 tries:
+
+a b c f d  e g i j m  h k l n v  q r y p s  o t u w x
+g i j k l  h a b c d  e f o s t  n u v w x  q r y p m
+h e m n p  f k l q r  a u w x y  o b c g t  d i j s v
+o r s t u  p w v x y  b c d q g  a e i m j  f h k l n
+q v w x y  o n s t u  i j m p r  d f h k l  b c a e g
+
+d h a b i  n e c f j  l m k g x  p o q t r  s u v y w
+f c g j k  d b a h i  n e p t o  s v w u y  l m q x r
+m n e o q  r l t u w  v y b a s  c d f x g  h j i k p
+l p t s v  g m k y x  c q r u w  b a j h i  e d f n o
+u w r y x  q v o s p  d h f i j  e k l n m  a b c g t
+
+b d f a c  l h e g n  m o j k p  r q s i u  v w x t y
+e g h i j  a c f b o  q d n l u  v x t y w  k p m r s
+n l o m r  i d w v k  s t x y a  f c b e p  j g h q u
+k x q u s  j y m p t  w b v r c  g h d a n  i e o f l
+p t y v w  s u x r q  f g e h i  j l m o k  c a n b d
+
+c f b d a  k i h e s  g n q o m  y t p r v  w x l u j
+i k l e g  t f d a b  p r u c h  x w n j o  y v s m q
+r j n h m  u o p l c  x v y w b  i s e q d  g f t a k
+s q x p o  w j y m v  k i t d l  u g a b f  r n e c h
+v y u w t  x q r n g  j a s e f  h m k l c  p o d i b
+
+t a d g b  c p j i e  u l h m n  k y r v q  x s w o f
+w m i c e  b t q d f  o p g v k  l n x s h  u y r j a
+x s p q h  y r g o l  t w i f d  m j u c a  n k b v e
+j u v r f  m s n k a  y x c b q  w p o d e  t l g h i
+y o k l n  v x u w h  r s a j e  t i g f b  m q p d c
+
+
+Sudoku test25a.txt, solution 9: solved in 341 steps, 324 tries:
+
+a b c f d  e g i j m  h k l n v  q r y p s  o t u w x
+g i j k l  h a b c d  e f o s t  n u v w x  q r y p m
+h e m n p  f k l q r  a u w x y  o b c g t  d i j s v
+o r s t u  p w v x y  b c d q g  a e i m j  f h k l n
+q v w x y  o n s t u  i j m p r  d f h k l  b c a e g
+
+d h a b i  n e c f j  l m k g x  p o q t r  s u v y w
+f c g j k  d b a h i  n e p t o  s v w u y  l m q x r
+m n e o q  r l t u w  v y b a s  c d f x g  h j i k p
+l p t s v  g m k y x  c q r u w  b a j h i  e d f n o
+u w r y x  q v o s p  d h f i j  e k l n m  a b c g t
+
+b d f a c  l h e g n  m o j k p  r q s i u  v w x t y
+e g h i j  a c f b o  q d n l u  v x t y w  k p m r s
+n l o m r  i d w v k  s t x y a  f c b e p  j g h q u
+k x q u s  j y m p t  w b v r c  g h d a n  i e o f l
+p t y v w  s u x r q  f g e h i  j l m o k  c a n b d
+
+c f b d a  k i h e s  g n q o m  y t p r v  w x l u j
+i k l e g  t f d a b  p r u c h  x w n j o  y v s m q
+r j n h m  u o p l c  x v y w b  i s e q d  g f t a k
+s q x p o  w j y m v  k i t d l  u g a b f  r n e c h
+v y u w t  x q r n g  j a s e f  h m k l c  p o d i b
+
+t a d g b  c p j i e  u l h m n  k y r v q  x s w o f
+w m i c e  b t q d f  o p g v k  l n x s h  u y r j a
+x s p q h  y r g o l  t w i f d  m j u c a  n k b v e
+j u v r f  m x n k a  y s c b q  w p o d e  t l g h i
+y o k l n  v s u w h  r x a j e  t i g f b  m q p d c
+
+
+Sudoku test25a.txt, solution 10: solved in 341 steps, 328 tries:
+
+a b c f d  e g i j m  h k l n v  q r y p s  o t u w x
+g i j k l  h a b c d  e f o s t  n u v w x  q r y p m
+h e m n p  f k l q r  a u w x y  o b c g t  d i j s v
+o r s t u  p w v x y  b c d q g  a e i m j  f h k l n
+q v w x y  o n s t u  i j m p r  d f h k l  b c a e g
+
+d h a b i  n e c f j  l m k g x  p o q t r  s u v y w
+f c g j k  d b a h i  n e p t o  s v w u y  l m q x r
+m n e o q  r l t u w  v y b a s  c d f x g  h j i k p
+l p t s v  g m k y x  c q r u w  b a j h i  e d f n o
+u w r y x  q v o s p  d h f i j  e k l n m  a b c g t
+
+b d f a c  l h e g n  m o j k p  r q s i u  v w x t y
+e g h i j  a c f b o  q d n l u  v x t y w  k p m r s
+n l o m r  i d w v k  s t x y a  f c b e p  j g h q u
+k x q u s  j y m p t  w b v r c  g h d a n  i e o f l
+p t y v w  s u x r q  f g e h i  j l m o k  c a n b d
+
+c f b d a  k i h e s  g n q o m  y t p r v  w x l u j
+i k l e g  t f d a b  p r u c h  x w n j o  y v s m q
+r j n h m  u o p l c  x v y w b  i s e q d  g f t a k
+s q x p o  w j y m v  k i t d l  u g a b f  r n e c h
+v y u w t  x q r n g  j a s e f  h m k l c  p o d i b
+
+t a d g b  c p j i e  u l h m n  k y r v q  x s w o f
+w m i c e  b t q d f  o p g v k  l n x s h  u y r j a
+y o p q h  m s g w l  r x i f d  t j u c a  n k b v e
+j u v r f  y x n k a  t s c b q  w p o d e  m l g h i
+x s k l n  v r u o h  y w a j e  m i g f b  t q p d c
+
+Bailing out after 10 solutions.
+
+real	200m11,012s
+user	200m3,801s
+sys	0m1,930s
