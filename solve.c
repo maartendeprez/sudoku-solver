@@ -6,11 +6,12 @@
 
 #define BRUTEFORCE 1 /* go on guessing if deterministic algorithm
 			yields an incompletely defined solution */
-#define COMB_BUF 1   /* use combination buffer; faster, but uses
+/*#define COMB_BUF 1*//* use combination buffer; faster, but uses
 		      * a block of memory (128MB for 5x5) per
 		      * group resolver; not possible yet with
 		      * parallelization */
-#define DEBUG_STEP 1
+/*#define CPU_NBITS 1*/
+/*#define DEBUG_STEP 1*/
 
 
 #include <sys/types.h>
@@ -20,7 +21,6 @@
 #include <string.h>
 #include <stdio.h>
 #include <stdlib.h>
-#include <x86intrin.h>
 
 
 /* Field type and predefined values
@@ -36,7 +36,7 @@ typedef struct params {
   int boardsize;
   int allbits;
   char *symbols;
-#if COMB_BUF
+#ifdef COMB_BUF
   field *buf;
 #endif
 } params_t;
@@ -48,6 +48,8 @@ typedef struct sudoku {
   char *path;
   int steps;
   int tries;
+  int allsteps;
+  int alltries;
   int solutions;
 } sudoku_t;
 
@@ -80,10 +82,25 @@ static int verify(params_t *p, field *board);
 
 static field combination(struct params *p, field *group, field c);
 
+#ifdef CPU_NBITS
+
+#include <x86intrin.h>
+
 #define nbits _mm_popcnt_u32
 #define fstbit __bsfd
 //#define clrbit(b) (c = __blsr_u32(b))
+
 #define clrbit(b) (b &= b - 1)
+
+#else
+
+static inline int nbits(field b);
+static inline int fstbit(field b);
+
+#define clrbit(b) (b &= b - 1)
+
+#endif
+
 
 
 /* Main functon
@@ -117,7 +134,7 @@ int main(int argc, char *argv[]) {
       return 1;
     }
 
-#if !BRUTEFORCE /* Deterministic solution */
+#ifndef BRUTEFORCE /* Deterministic solution */
 
     s = solve(&game);
     showmeta(&game, s);
@@ -247,13 +264,15 @@ int load(sudoku_t *game, params_t *pars, int pn, char *path) {
   game->pars = &pars[p];
   game->steps = 0;
   game->tries = 0;
+  game->allsteps = 0;
+  game->alltries = 0;
   game->solutions = 0;
   game->path = path;
 
-#if COMB_BUF
-  game->pars->buf = malloc((p->allbits + 1) * sizeof(field));
+#ifdef COMB_BUF
+  game->pars->buf = malloc((game->pars->allbits + 1) * sizeof(field));
 
-  if (p->buf == NULL) {
+  if (game->pars->buf == NULL) {
     fprintf(stderr, "Failed to allocate buffer: %m\n");
     exit(1);
   }
@@ -265,8 +284,8 @@ int load(sudoku_t *game, params_t *pars, int pn, char *path) {
 
 void unload(sudoku_t *game) {
   free(game->board);
-#if COMB_BUF
-  free(game->params->buf)
+#ifdef COMB_BUF
+  free(game->pars->buf);
 #endif
 }
 
@@ -289,15 +308,15 @@ void showmeta(sudoku_t *game, int s) {
 
   if (s > 0) {
 
-    printf("\nSudoku %s, solution %d: %s in %d steps, %d tries:\n\n",
+    printf("\nSudoku %s, solution %d: %s in %d steps, %d tries\n\t(total %d steps, %d tries):\n\n",
 	   game->path, game->solutions, statusmsg(s),
-	   game->steps, game->tries);
+	   game->steps, game->tries, game->allsteps, game->alltries);
 
   } else {
 
     printf("\nSudoku %s: %s after %d steps, %d tries:\n\n",
 	   game->path, statusmsg(s),
-	   game->steps, game->tries);
+	   game->allsteps, game->alltries);
   }
 
 }
@@ -409,9 +428,11 @@ int solve(sudoku_t *game) {
   field *board = game->board;
   int s;
   
-  while (status(p, board) == 0 && solve1(p, board))
+  while (status(p, board) == 0 && solve1(p, board)) {
     game->steps++;
-
+    game->allsteps++;
+  }
+  
   s = verify(p, board);
 
   if (s > 0)
@@ -436,13 +457,15 @@ int solve2(sudoku_t *game, int ms) {
   int i, s, n;
 
   field *board_;
-  int steps_;
+  int steps_, tries_;
 
 
   /* Try to solve deterministically */
 
-  while (status(p, board) == 0 && solve1(p, board))
+  while (status(p, board) == 0 && solve1(p, board)) {
     game->steps++;
+    game->allsteps++;
+  }
 
   if ((s = verify(p, board)) != 0) {
 
@@ -466,6 +489,7 @@ int solve2(sudoku_t *game, int ms) {
 
   memcpy(board_, board, p->boardsize * sizeof(field));
   steps_ = game->steps;
+  tries_ = game->tries;
 
 
   /* Select first undetermined field */
@@ -482,6 +506,7 @@ int solve2(sudoku_t *game, int ms) {
 
     board[i] = 1 << fstbit(b);
     game->tries++;
+    game->alltries++;
     clrbit(b);
     
     /* Recurse */
@@ -495,6 +520,7 @@ int solve2(sudoku_t *game, int ms) {
 
     memcpy(board, board_, p->boardsize * sizeof(field));
     game->steps = steps_;
+    game->tries = tries_;
 
   }
 
@@ -520,52 +546,54 @@ int solve2(sudoku_t *game, int ms) {
 static int solve1(params_t *p, field *board) {
 
   int i, j, m = 0;
-  field group[p->groupsize];
+  field cols[p->boardsize];
+  field blocks[p->boardsize];
 
-
-  /* Solve rows */
+  
+  /* Extract cols and blocks */
   
   for (i = 0; i < p->groupsize; i++) {
+    
+    for (j = 0; j < p->groupsize; j++) {
+      
+      cols[i * p->groupsize + j] = board[j * p->groupsize + i];
+      
+      blocks[i * p->groupsize + j] = board[  (i / p->dimension) * p->groupsize * p->dimension
+					   + (i % p->dimension) * p->dimension
+					   + (j / p->dimension) * p->groupsize
+					   + (j % p->dimension)];
+    }
+    
+  }
+
+  
+  /* Solve rows, cols, blocks */
+#pragma acc parallel loop reduction(+:m) copy(board[p->boardsize]) copy(cols) copy(blocks)
+  for (i = 0; i < p->groupsize; i++) {
+    m += solvegroup(p, &cols[(i * p->groupsize)]);
     m += solvegroup(p, &board[i * p->groupsize]);
-  }
-
-  
-  /* Solve cols */
-  
-  for (i = 0; i < p->groupsize; i++) {
-
-    for (j = 0; j < p->groupsize; j++)
-      group[j] = board[j * p->groupsize + i];
-    
-    m += solvegroup(p, group);
-
-    for (j = 0; j < p->groupsize; j++)
-      board[j * p->groupsize + i] = group[j];
-    
+    m += solvegroup(p, &blocks[i * p->groupsize]);
   }
 
 
-  /* Solve blocks */
+  /* Integrate results */
   
   for (i = 0; i < p->groupsize; i++) {
 
-    for (j = 0; j < p->groupsize; j++)
-      group[j] = board[  (i / p->dimension) * p->groupsize * p->dimension
-		       + (i % p->dimension) * p->dimension
-		       + (j / p->dimension) * p->groupsize
-		       + (j % p->dimension)];
+    for (j = 0; j < p->groupsize; j++) {
+      
+      board[i * p->groupsize + j] &= cols[j * p->groupsize + i];
+      
+      board[i * p->groupsize + j] &= blocks[  (i / p->dimension) * p->groupsize * p->dimension
+					   + (i % p->dimension) * p->dimension
+					   + (j / p->dimension) * p->groupsize
+					   + (j % p->dimension)];
 
-    m += solvegroup(p, group);
-
-    for (j = 0; j < p->groupsize; j++)
-      board[  (i / p->dimension) * p->groupsize * p->dimension
-	    + (i % p->dimension) * p->dimension
-	    + (j / p->dimension) * p->groupsize
-	    + (j % p->dimension)] = group[j];
-
+    }
+    
   }
 
-#if DEBUG_STEP
+#ifdef DEBUG_STEP
   fprintf(stderr, "\nStep (%d changes)\n\n", m);
   showboard(p, board);
 #endif
@@ -594,13 +622,14 @@ static int solve1(params_t *p, field *board) {
  * in all combinations that do not include field n.
  */
 
+#pragma acc routine seq
 static int solvegroup(params_t *p, field *group) {
 
   int i, m = 0;
   field b, c, d;
   field def[p->groupsize];
   
-#if COMB_BUF
+#ifdef COMB_BUF
 
   /* Populate combination buffer */
   
@@ -618,11 +647,13 @@ static int solvegroup(params_t *p, field *group) {
 
   /* Calculate defined combinations */
   
-  memset(def, 0, sizeof(def));
+  //memset(def, 0, sizeof(def));
+  for (i = 0; i < p->groupsize; i++)
+    def[i] = 0;
   
   for (c = 1; c < p->allbits; c++) {
 
-#if COMB_BUF
+#ifdef COMB_BUF
     b = p->buf[c];
 #else
     b = combination(p, group, c);
@@ -656,6 +687,43 @@ static int solvegroup(params_t *p, field *group) {
 
 }
 
+#ifndef CPU_NBITS
+
+#pragma acc routine seq
+static inline int nbits(field b) {
+
+  int n = 0;
+  
+  while (b) {
+    n += b & 1;
+    b >>= 1;
+  }
+
+  return n;
+  
+}
+
+#pragma acc routine seq
+static inline int fstbit(field b) {
+
+  int i = 0;
+
+  if (b == 0)
+    return -1;
+  
+  while ((b & 1) == 0) {
+    i++;
+    b >>= 1;
+  }
+  
+  return i;
+
+}
+
+#endif
+
+
+#pragma acc routine seq
 static field combination(params_t *p, field *group, field c) {
 
   int j;
