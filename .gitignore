@@ -6,3 +6,5 @@ gmon.out
 
 sudoku
 solve
+solve-acc
+solve-cuda
