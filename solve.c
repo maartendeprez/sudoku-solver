@@ -10,7 +10,7 @@
 		      * a block of memory (128MB for 5x5) per
 		      * group resolver; not possible yet with
 		      * parallelization */
-/*#define CPU_NBITS 1*/
+/*#define CPUEXT 1*/ /* use CPU extensions (doesn't work for GPU) */
 /*#define DEBUG_STEP 1*/
 
 
@@ -63,6 +63,7 @@ void unload(sudoku_t *game);
 
 void show(sudoku_t *game);
 void showmeta(sudoku_t *game, int s);
+void showmeta2(sudoku_t *game);
 
 int solve(sudoku_t *game);
 int solve2(sudoku_t *game, int ms);
@@ -71,6 +72,8 @@ char *statusmsg(int s);
 
 
 static int solve1(params_t *p, field *board);
+
+#pragma acc routine seq
 static int solvegroup(params_t *p, field *group);
 
 static void showboard(params_t *p, field *board);
@@ -80,9 +83,10 @@ static char field_to_sym(params_t *p, field b);
 static int status(params_t *p, field *board);
 static int verify(params_t *p, field *board);
 
+#pragma acc routine seq
 static field combination(struct params *p, field *group, field c);
 
-#ifdef CPU_NBITS
+#ifdef CPUEXT
 
 #include <x86intrin.h>
 
@@ -94,7 +98,10 @@ static field combination(struct params *p, field *group, field c);
 
 #else
 
+#pragma acc routine seq
 static inline int nbits(field b);
+
+#pragma acc routine seq
 static inline int fstbit(field b);
 
 #define clrbit(b) (b &= b - 1)
@@ -155,6 +162,8 @@ int main(int argc, char *argv[]) {
     }
 
 #endif
+
+    showmeta2(&game);
     
     unload(&game);
     
@@ -308,19 +317,26 @@ void showmeta(sudoku_t *game, int s) {
 
   if (s > 0) {
 
-    printf("\nSudoku %s, solution %d: %s in %d steps, %d tries\n\t(total %d steps, %d tries):\n\n",
+    printf("\nSudoku %s, solution %d: %s in %d steps, %d tries:\n\n",
 	   game->path, game->solutions, statusmsg(s),
-	   game->steps, game->tries, game->allsteps, game->alltries);
+	   game->steps, game->tries);
 
   } else {
 
     printf("\nSudoku %s: %s after %d steps, %d tries:\n\n",
 	   game->path, statusmsg(s),
-	   game->allsteps, game->alltries);
+	   game->steps, game->tries);
   }
 
 }
 
+
+/* Print total work information to standard output */
+void showmeta2(sudoku_t *game) {
+  printf("\nSudoku %s: found %d solution(s) in %d steps, %d tries\n",
+	 game->path, game->solutions,
+	 game->allsteps, game->alltries);
+}
 
 /* Print board to standard output.
  * 
@@ -594,7 +610,7 @@ static int solve1(params_t *p, field *board) {
   }
 
 #ifdef DEBUG_STEP
-  fprintf(stderr, "\nStep (%d changes)\n\n", m);
+  printf("\nStep (%d changes)\n\n", m);
   showboard(p, board);
 #endif
   
@@ -622,7 +638,6 @@ static int solve1(params_t *p, field *board) {
  * in all combinations that do not include field n.
  */
 
-#pragma acc routine seq
 static int solvegroup(params_t *p, field *group) {
 
   int i, m = 0;
@@ -687,9 +702,8 @@ static int solvegroup(params_t *p, field *group) {
 
 }
 
-#ifndef CPU_NBITS
+#ifndef CPUEXT
 
-#pragma acc routine seq
 static inline int nbits(field b) {
 
   int n = 0;
@@ -703,7 +717,6 @@ static inline int nbits(field b) {
   
 }
 
-#pragma acc routine seq
 static inline int fstbit(field b) {
 
   int i = 0;
@@ -723,7 +736,6 @@ static inline int fstbit(field b) {
 #endif
 
 
-#pragma acc routine seq
 static field combination(params_t *p, field *group, field c) {
 
   int j;
