@@ -1,0 +1,1 @@
+A simple sudoku solver. Started as a naive haskell implementation (my first test progam after learning haskell), followed by a more optimized C reimplementation with CUDA support in order to be able generate 25x25 sudokus.
